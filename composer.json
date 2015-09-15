@@ -18,7 +18,8 @@
             "App\\": "app/"
         },
         "classmap": [
-            "database/"
+            "database/",
+            "tests/api/ApiTester.php"
         ]
     },
     "autoload-dev": {

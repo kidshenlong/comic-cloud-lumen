@@ -11,6 +11,30 @@
 |
 */
 
-$app->get('/', function () use ($app) {
-    return $app->welcome();
+$app->get('/status', function () use ($app) {
+    return [
+        'status' => 'OK'
+    ];
+});
+
+
+$app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('APP_VERSION', '0.1')], function ($app) {
+
+    $app->get('uploads', 'UploadsController@index');
+    $app->post('uploads', 'UploadsController@store');
+    $app->get('uploads/{id}', 'UploadsController@show');
+
+
+});
+
+
+$app->group(['namespace' => 'App\Http\Controllers\Admin', 'prefix' => 'admin'], function ($app) {
+
+
+});
+
+
+$app->group(['namespace' => 'App\Http\Controllers\Processor', 'prefix' => 'processor'], function ($app) {
+
+
 });
