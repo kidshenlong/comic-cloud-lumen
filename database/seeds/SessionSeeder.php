@@ -6,6 +6,8 @@
  * Time: 11:12
  */
 
+use Carbon\Carbon;
+
 use Illuminate\Database\Seeder;
 
 class SessionSeeder extends Seeder {
