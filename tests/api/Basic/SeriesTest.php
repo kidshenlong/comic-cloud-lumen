@@ -329,7 +329,6 @@ class SeriesTest extends ApiTester{
         $this->assertResponseStatus(400);
     }
     /**
-     * @group lolz
      * @group basic
      * @group series-test
      */
@@ -352,35 +351,76 @@ class SeriesTest extends ApiTester{
      * @group basic
      * @group series-test
      */
-    public function test_a_user_cannot_delete_a_series_that_belongs_to_them(){
+    public function test_a_user_cannot_delete_a_series_that_belongs_to_them(){/*Untested*/
+
+        $this->seed();
+
+        $comic = factory(App\Models\Comic::class)->create([
+            'user_id' => 2,
+            'series_id' => factory(App\Models\Series::class)->create(['user_id' => 2])->id
+        ]);
+
+        $this->delete($this->basic_series_endpoint.$comic->series_id, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);
 
     }
     /**
      * @group basic
      * @group series-test
      */
-    public function test_a_user_cannot_delete_a_series_that_does_not_exist(){
+    public function test_a_user_cannot_delete_a_series_that_does_not_exist(){/*Untested*/
+        $this->seed();
+
+        $this->delete($this->basic_series_endpoint."xyz", [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);
+    }
+    /**
+     * @group basic
+     * @group series-test
+     */
+    public function test_it_can_fetch_meta_data_for_a_series_that_exists(){/*Untested*/
+
+        $this->seed();
+
+        $comic = factory(App\Models\Comic::class)->create([
+            'user_id' => 1,
+            'series_id' => factory(App\Models\Series::class)->create(['user_id' => 1])->id
+        ]);
+
+        $this->get($this->basic_series_endpoint.$comic->series->id."/meta", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->assertResponseStatus(200);
 
     }
     /**
      * @group basic
      * @group series-test
      */
-    public function test_it_can_fetch_meta_data_for_a_series_that_exists(){
+    public function test_it_cannot_fetch_meta_data_for_a_series_that_does_not_exist(){/*Untested*/
+        $this->seed();
 
+        $this->delete($this->basic_series_endpoint."xyz/".$this->meta, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);
     }
     /**
      * @group basic
      * @group series-test
      */
-    public function test_it_cannot_fetch_meta_data_for_a_series_that_does_not_exist(){
+    public function test_it_cannot_fetch_meta_data_for_series_that_does_not_belong_to_the_user(){/*Untested*/
 
-    }
-    /**
-     * @group basic
-     * @group series-test
-     */
-    public function test_it_cannot_fetch_meta_data_for_series_that_does_not_belong_to_the_user(){
+
+        $this->seed();
+
+        $comic = factory(App\Models\Comic::class)->create([
+            'user_id' => 2,
+            'series_id' => factory(App\Models\Series::class)->create(['user_id' => 2])->id
+        ]);
+
+        $this->get($this->basic_series_endpoint.$comic->series->id."/meta", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->assertResponseStatus(404);
+
 
     }
 }
