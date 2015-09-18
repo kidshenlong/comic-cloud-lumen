@@ -290,7 +290,7 @@ class ComicTest extends ApiTester{
      * @group basic
      * @group comic-test
      */
-    public function test_it_can_fetch_meta_data_for_a_comic_that_exists(){
+    public function test_it_can_fetch_meta_data_for_a_comic_that_exists(){//TODO: Setup comic vine VCR
         $this->seed();
 
         $comic = factory(App\Models\Comic::class)->create([
@@ -301,18 +301,9 @@ class ComicTest extends ApiTester{
                 'comic_vine_series_id' => '18139'
             ])->id
         ]);
-        \VCR\VCR::turnOn();
-
-        // Record requests and responses in cassette file 'example'
-        \VCR\VCR::insertCassette('comicvine.yml');
 
         $this->get($this->basic_comic_endpoint.$comic->id."/meta", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token]);//->seeJson();
         $this->assertResponseOk();
-        // To stop recording requests, eject the cassette
-        \VCR\VCR::eject();
-
-        // Turn off VCR to stop intercepting requests
-        \VCR\VCR::turnOff();
 
     }
     /**
@@ -348,9 +339,8 @@ class ComicTest extends ApiTester{
      * @vcrd comicvine-fail.yml
      * @group basic
      * @group comic-test
-     * @group lolz_comic
      */
-    public function test_it_will_fail_gracefully_if_comic_vine_is_unavailable(){
+    public function test_it_will_fail_gracefully_if_comic_vine_is_unavailable(){//TODO: Setup comic vine VCR
         $this->seed();
 
         $comic = factory(App\Models\Comic::class)->create([
@@ -361,16 +351,7 @@ class ComicTest extends ApiTester{
                 'comic_vine_series_id' => '18139'
             ])->id
         ]);
-        \VCR\VCR::turnOn();
-
-        // Record requests and responses in cassette file 'example'
-        \VCR\VCR::insertCassette('comicvine-fail.yml');
         $this->get($this->basic_comic_endpoint.$comic->id."/meta", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
-        // To stop recording requests, eject the cassette
-        \VCR\VCR::eject();
-
-        // Turn off VCR to stop intercepting requests
-        \VCR\VCR::turnOff();
 
         $this->assertResponseStatus(500);
     }
