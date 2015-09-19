@@ -55,17 +55,20 @@ $app->singleton(
 |
 */
 
-// $app->middleware([
-//     // Illuminate\Cookie\Middleware\EncryptCookies::class,
-//     // Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-//     // Illuminate\Session\Middleware\StartSession::class,
-//     // Illuminate\View\Middleware\ShareErrorsFromSession::class,
-//     // Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
-// ]);
-
-// $app->routeMiddleware([
-
-// ]);
+$app->middleware([
+    // Illuminate\Cookie\Middleware\EncryptCookies::class,
+    // Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    // Illuminate\Session\Middleware\StartSession::class,
+    // Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    // Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
+    'LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware'
+]);
+$app->routeMiddleware([
+    'check-authorization-params' => 'LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware',
+    'csrf' => 'Laravel\Lumen\Http\Middleware\VerifyCsrfToken',
+    'oauth' => 'LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware',
+    'oauth-owner' => 'LucaDegasperi\OAuth2Server\Middleware\OAuthOwnerMiddleware'
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +83,16 @@ $app->singleton(
 
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+$app->register('LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider');
+$app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
+
+/*
+|--------------------------------------------------------------------------
+| Load Custom Configs
+|--------------------------------------------------------------------------
+*/
+$app->configure('oauth2');
 
 /*
 |--------------------------------------------------------------------------
