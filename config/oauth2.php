@@ -41,11 +41,7 @@ return [
                 ];
 
                 if (Auth::once($credentials)) {
-                    if(Auth::user()->type != "basic"){
-                        return false;
-                    }else {
-                        return Auth::user()->id;
-                    }
+                    return Auth::user()->type == "basic" ? Auth::user()->id : false;
                 } else {
                     return false;
                 }
@@ -63,11 +59,7 @@ return [
                 ];
 
                 if (Auth::once($credentials)) {
-                    if(Auth::user()->type != "admin"){
-                        return false;
-                    }else {
-                        return Auth::user()->id;
-                    }
+                    return Auth::user()->type == "admin" ? Auth::user()->id : false;
                 } else {
                     return false;
                 }
