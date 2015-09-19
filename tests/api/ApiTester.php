@@ -32,106 +32,31 @@ class ApiTester extends TestCase {
     protected $basic_series_endpoint = "/v0.1/series/";
     protected $admin_series_endpoint = "/admin/series/";
 
+    protected $meta_endpoint = "/meta";
+
     protected $admin_comic_book_archive_endpoint = "/admin/comicbookarchives/";
     protected $processor_comic_book_archive_endpoint = "/processor/comicbookarchives/";
 
     /**
-     * Visit the given URI with a POST request with content type of application/json.
+     * Visit the given URI with a JSON request.
      *
+     * @param  string  $method
      * @param  string  $uri
      * @param  array  $data
      * @param  array  $headers
      * @return $this
      */
-    public function postJson($uri, array $data = [], array $headers = [])
+    public function json($method, $uri, array $data = [], array $headers = [])
     {
         $content = json_encode($data);
-        $headers['CONTENT_TYPE'] = 'application/json';
-        $headers['CONTENT_LENGTH'] = mb_strlen($content, '8bit');
-
-        if (! isset($headers['Accept'])) {
-            $headers['Accept'] = 'application/json';
-        }
-
-        $server = $this->transformHeadersToServerVars($headers);
-
-        $this->call('POST', $uri, [], [], [], $server, $content);
-
-        return $this;
-    }
-
-    /**
-     * Visit the given URI with a PUT request with content type of application/json.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $headers
-     * @return $this
-     */
-    public function putJson($uri, array $data = [], array $headers = [])
-    {
-        $content = json_encode($data);
-        $headers['CONTENT_TYPE'] = 'application/json';
-        $headers['CONTENT_LENGTH'] = mb_strlen($content, '8bit');
-
-        if (! isset($headers['Accept'])) {
-            $headers['Accept'] = 'application/json';
-        }
-
-        $server = $this->transformHeadersToServerVars($headers);
-
-        $this->call('PUT', $uri, [], [], [], $server, $content);
-
-        return $this;
-    }
-
-    /**
-     * Visit the given URI with a GET request with content type of application/json.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $headers
-     * @return $this
-     */
-    public function getJson($uri, array $data = [], array $headers = [])
-    {
-        $content = json_encode($data);
-        $headers['CONTENT_TYPE'] = 'application/json';
-        $headers['CONTENT_LENGTH'] = mb_strlen($content, '8bit');
-
-        if (! isset($headers['Accept'])) {
-            $headers['Accept'] = 'application/json';
-        }
-
-        $server = $this->transformHeadersToServerVars($headers);
-
-        $this->call('GET', $uri, [], [], [], $server, $content);
-
-        return $this;
-    }
-
-    /**
-     * Visit the given URI with a DELETE request with content type of application/json.
-     *
-     * @param  string  $uri
-     * @param  array  $data
-     * @param  array  $headers
-     * @return $this
-     */
-    public function deleteJson($uri, array $data = [], array $headers = [])
-    {
-        $content = json_encode($data);
-        $headers['CONTENT_TYPE'] = 'application/json';
-        $headers['CONTENT_LENGTH'] = mb_strlen($content, '8bit');
-
-        if (! isset($headers['Accept'])) {
-            $headers['Accept'] = 'application/json';
-        }
-
-        $server = $this->transformHeadersToServerVars($headers);
-
-        $this->call('DELETE', $uri, [], [], [], $server, $content);
-
+        $headers = array_merge([
+            'CONTENT_LENGTH' => mb_strlen($content, '8bit'),
+            'CONTENT_TYPE' => 'application/json',
+            'Accept' => 'application/json',
+        ], $headers);
+        $this->call(
+            $method, $uri, [], [], [], $this->transformHeadersToServerVars($headers), $content
+        );
         return $this;
     }
 

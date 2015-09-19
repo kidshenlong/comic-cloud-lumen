@@ -389,7 +389,7 @@ class SeriesTest extends ApiTester{
             'series_id' => factory(App\Models\Series::class)->create(['user_id' => 1])->id
         ]);
 
-        $this->get($this->basic_series_endpoint.$comic->series->id."/meta", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->get($this->basic_series_endpoint.$comic->series->id.$this->meta_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
         $this->assertResponseStatus(200);
 
     }
@@ -400,7 +400,7 @@ class SeriesTest extends ApiTester{
     public function test_it_cannot_fetch_meta_data_for_a_series_that_does_not_exist(){/*Untested*/
         $this->seed();
 
-        $this->delete($this->basic_series_endpoint."xyz/".$this->meta, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->delete($this->basic_series_endpoint."xyz".$this->meta_endpoint, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
 
         $this->assertResponseStatus(404);
     }
@@ -418,7 +418,7 @@ class SeriesTest extends ApiTester{
             'series_id' => factory(App\Models\Series::class)->create(['user_id' => 2])->id
         ]);
 
-        $this->get($this->basic_series_endpoint.$comic->series->id."/meta", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->get($this->basic_series_endpoint.$comic->series->id.$this->meta_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
         $this->assertResponseStatus(404);
 
 

@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if(parent::isHttpException($e)){
+        if($e instanceof HttpException){
             return response()->json(['errors' => [[
                 'title' => 'HTTP Exception',
                 'detail' => $e->getMessage(),
