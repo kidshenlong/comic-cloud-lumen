@@ -137,7 +137,7 @@ class SeriesTest extends ApiTester{
         $faker = Factory::create();
         $newSeriesId = $faker->uuid;
 
-        $this->post($this->basic_series_endpoint, [
+        $this->json('post',$this->basic_series_endpoint, [
             'id' => $newSeriesId,
             'comic_id' => $comic->id,
             'series_title' => $faker->sentence(),
@@ -168,7 +168,7 @@ class SeriesTest extends ApiTester{
 
         $faker = Factory::create();
 
-        $this->post($this->basic_series_endpoint, [
+        $this->json('post',$this->basic_series_endpoint, [
             'id' => 'xyz',
             'comic_id' => $comic->id,
             'series_title' => $faker->sentence(),
@@ -194,7 +194,7 @@ class SeriesTest extends ApiTester{
         $faker = Factory::create();
         $newSeriesId = $faker->uuid;
 
-        $this->post($this->basic_series_endpoint, [
+        $this->json('post', $this->basic_series_endpoint, [
             'id' => $newSeriesId,
             'comic_id' => $comic->id,
             'series_title' => $faker->sentence(),
@@ -233,7 +233,7 @@ class SeriesTest extends ApiTester{
             'series_id' => factory(App\Models\Series::class)->create(['user_id' => 1])->id
         ]);
 
-        $this->put($this->basic_series_endpoint.$comic->series->id, [
+        $this->json('put', $this->basic_series_endpoint.$comic->series->id, [
             'series_title' => 'xyz',
             'series_start_year' => date('Y'),
             'series_publisher' => 'xyz',
@@ -271,7 +271,7 @@ class SeriesTest extends ApiTester{
             'series_id' => factory(App\Models\Series::class)->create(['user_id' => 2])->id
         ]);
 
-        $this->put($this->basic_series_endpoint.$comic->series->id, [
+        $this->json('put', $this->basic_series_endpoint.$comic->series->id, [
             'series_title' => 'xyz',
             'series_start_year' => date('Y'),
             'series_publisher' => 'xyz',
@@ -294,7 +294,7 @@ class SeriesTest extends ApiTester{
             'series_id' => factory(App\Models\Series::class)->create(['user_id' => 1])->id
         ]);
 
-        $this->put($this->basic_series_endpoint.$comic->series->id, [
+        $this->json('put', $this->basic_series_endpoint.$comic->series->id, [
             'series_title' => 'xyz',
             'series_start_year' => 'xyz',
             'series_publisher' => 'xyz',
@@ -317,7 +317,7 @@ class SeriesTest extends ApiTester{
             'series_id' => factory(App\Models\Series::class)->create(['user_id' => 1])->id
         ]);
 
-        $this->put($this->basic_series_endpoint.$comic->series->id, [
+        $this->json('put', $this->basic_series_endpoint.$comic->series->id, [
             'series_title' => 'xyz',
             'series_start_year' => date('Y'),
             'series_publisher' => 'xyz',
