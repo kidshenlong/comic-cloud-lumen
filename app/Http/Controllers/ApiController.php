@@ -8,6 +8,8 @@
 
 use App\Http\Requests;
 
+use App\Models\User;
+use LucaDegasperi\OAuth2Server\Authorizer;
 use Symfony\Component\HttpFoundation\Response as IlluminateResponse;
 
 class ApiController extends Controller {
@@ -18,6 +20,14 @@ class ApiController extends Controller {
     protected $statusCode = 200;
     protected $statusMessage = 'success';
     protected $message = null;
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return User::find(Authorizer::getResourceOwnerId());
+    }
 
     /**
      * @param mixed $statusCode

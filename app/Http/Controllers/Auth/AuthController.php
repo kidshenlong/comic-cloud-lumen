@@ -1,0 +1,54 @@
+<?php namespace App\Http\Controllers\Auth;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\ApiController;
+use App\Models\User;
+use Validator;
+use Authorizer;
+
+class AuthController extends ApiController {
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $request
+     * @return User
+     */
+    public function create(Request $request)
+    {
+        $request = $request->all();
+
+        $validator = Validator::make($request, [
+            'username' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails()){
+            $pretty_errors = array_map(function($item){
+                return [
+                    'title' => 'Missing Required Field',
+                    'detail' => $item,
+                    'status' => 400,
+                    'code' => ''
+                ];
+            }, $validator->errors()->all());
+
+            return $this->respondBadRequest($pretty_errors);
+        }
+
+        User::create([
+            'username' => $request['username'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password']),
+        ]);
+
+        return $this->respondCreated('Registration Successful');//TODO: Should this be a more meaning message?
+    }
+
+    public function createToken(){
+        Authorizer::setRequest(Request::json());//TODO: See if it's possible to convert json request into expected request instance
+        return $this->respond(Authorizer::issueAccessToken());
+    }
+
+}

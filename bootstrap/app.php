@@ -94,6 +94,15 @@ $app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
 */
 $app->configure('oauth2');
 
+
+/*
+|--------------------------------------------------------------------------
+| Load Custom Facades
+|--------------------------------------------------------------------------
+*/
+
+class_alias('LucaDegasperi\OAuth2Server\Facades\Authorizer', 'Authorizer');
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
