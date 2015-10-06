@@ -16,7 +16,7 @@ class AuthController extends ApiController {
      */
     public function create(Request $request)
     {
-        $request = $request->all();
+        $request = $request->json()->all();
 
         $validator = Validator::make($request, [
             'username' => 'required|max:255',
