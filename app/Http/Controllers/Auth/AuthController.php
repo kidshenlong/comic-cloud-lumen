@@ -43,11 +43,23 @@ class AuthController extends ApiController {
             'password' => bcrypt($request['password']),
         ]);
 
-        return $this->respondCreated('Registration Successful');//TODO: Should this be a more meaning message?
+        return $this->respondCreated([[
+            'title' => 'Registration Successful',
+            'detail' => 'Registration Successful',
+            'status' => 201,
+            'code' => ''
+        ]]);
     }
 
-    public function createToken(){
-        Authorizer::setRequest(Request::json());//TODO: See if it's possible to convert json request into expected request instance
+    public function createToken(Request $request){
+        $json = $request->json()->all();
+
+        $request = new Request;
+
+        $request->request->replace($json);
+
+        Authorizer::setRequest($request);
+
         return $this->respond(Authorizer::issueAccessToken());
     }
 
