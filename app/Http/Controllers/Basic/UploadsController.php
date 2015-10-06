@@ -13,6 +13,7 @@ class UploadsController extends ApiController {
      * @return mixed
      */
     public function index(){
+        $currentUser = $this->getUser();
         return $this->respondCreated(['lol']);
     }
 }

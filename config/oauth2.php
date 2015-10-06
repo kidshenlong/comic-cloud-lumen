@@ -34,44 +34,14 @@ return [
             'access_token_ttl' => 604800,
 
             // the code to run in order to verify the user's identity
-            'callback'         => function($username, $password){
-                $credentials = [
-                    'username'    => $username,
-                    'password' => $password,
-                ];
-
-                if (Auth::once($credentials)) {
-                    if(Auth::user()->type != "basic"){
-                        return false;
-                    }else {
-                        return Auth::user()->id;
-                    }
-                } else {
-                    return false;
-                }
-            }
+            'callback'         => '\App\PasswordGrantVerifier@verifyBasic'
         ],
         'password_admin' => [
             'class'            => 'App\Grants\PasswordGrant',
             'access_token_ttl' => 604800,
 
             // the code to run in order to verify the user's identity
-            'callback'         => function($username, $password){
-                $credentials = [
-                    'username'    => $username,
-                    'password' => $password,
-                ];
-
-                if (Auth::once($credentials)) {
-                    if(Auth::user()->type != "admin"){
-                        return false;
-                    }else {
-                        return Auth::user()->id;
-                    }
-                } else {
-                    return false;
-                }
-            }
+            'callback'         => '\App\PasswordGrantVerifier@verifyAdmin'
         ],
         'refresh_token' => [
             'class'                 => 'League\OAuth2\Server\Grant\RefreshTokenGrant',

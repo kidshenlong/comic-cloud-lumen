@@ -17,14 +17,17 @@ $app->get('/status', function () use ($app) {
     ];
 });
 
+$app->group(['namespace' => 'App\Http\Controllers\Auth', 'prefix' => 'auth'], function($app) {
+    $app->post('register', 'AuthController@create');
+    $app->post('access_token', 'AuthController@createToken');
+});
+
+
 
 $app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('APP_VERSION', '0.1')], function ($app) {
-
     $app->get('uploads', 'UploadsController@index');
     $app->post('uploads', 'UploadsController@store');
     $app->get('uploads/{id}', 'UploadsController@show');
-
-
 });
 
 
