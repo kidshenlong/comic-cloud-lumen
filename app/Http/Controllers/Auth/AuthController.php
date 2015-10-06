@@ -52,6 +52,8 @@ class AuthController extends ApiController {
     }
 
     public function createToken(Request $request){
+        //isJson()
+        //dd($request->isJson());
         $json = $request->json()->all();
 
         $request = new Request;
