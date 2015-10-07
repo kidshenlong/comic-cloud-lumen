@@ -22,7 +22,7 @@ class JsonContentTypeMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!$request->isJson()) abort(400); //TODO: Correct error message
+        if(!$request->isJson() && $request->method() != "GET") abort(400); //TODO: Correct error message and also check if get requests should require content type headers.
         return $next($request);
     }
 }

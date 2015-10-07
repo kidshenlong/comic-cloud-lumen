@@ -24,7 +24,7 @@ $app->group(['namespace' => 'App\Http\Controllers\Auth', 'prefix' => 'auth'], fu
 
 
 
-$app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('APP_VERSION', '0.1')], function ($app) {
+$app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('APP_VERSION', '0.1'), 'middleware' => 'oauth'], function ($app) {
     $app->get('uploads', 'UploadsController@index');
     $app->post('uploads', 'UploadsController@store');
     $app->get('uploads/{id}', 'UploadsController@show');

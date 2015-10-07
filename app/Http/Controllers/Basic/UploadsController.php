@@ -6,14 +6,22 @@
  * Time: 21:40
  */
 use App\Http\Controllers\ApiController;
+use Request;
+use App\Models\Upload;
 
 class UploadsController extends ApiController {
 
     /**
      * @return mixed
      */
-    public function index(){
+    public function index(Request $request){
         $currentUser = $this->getUser();
-        return $this->respondCreated(['lol']);
+
+        $uploads = $currentUser->uploads()->paginate(env('paginate_per_page'))->toArray();
+
+        $uploads['upload'] = $uploads['data'];
+        unset($uploads['data']);
+
+        return $this->respond($uploads);
     }
 }

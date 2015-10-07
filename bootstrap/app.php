@@ -66,7 +66,7 @@ $app->middleware([
 ]);
 $app->routeMiddleware([
     'check-authorization-params' => 'LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware',
-    'csrf' => 'Laravel\Lumen\Http\Middleware\VerifyCsrfToken',
+    //'csrf' => 'Laravel\Lumen\Http\Middleware\VerifyCsrfToken',
     'oauth' => 'LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware',
     'oauth-owner' => 'LucaDegasperi\OAuth2Server\Middleware\OAuthOwnerMiddleware'
 ]);
@@ -87,6 +87,7 @@ $app->routeMiddleware([
 
 $app->register('LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider');
 $app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
+$app->register('Aws\Laravel\AwsServiceProvider::class');
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,7 @@ $app->configure('oauth2');
 */
 
 class_alias('LucaDegasperi\OAuth2Server\Facades\Authorizer', 'Authorizer');
+class_alias('Aws\Laravel\AwsFacade::class', 'AWS');
 
 /*
 |--------------------------------------------------------------------------
