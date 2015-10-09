@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.7.0",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "4cd2d5cccc0bf7be331b01008ae564f8cbc49e6f"
+                "reference": "6690347bc833e36f7c781eb3cc2bb33a6c49ca7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4cd2d5cccc0bf7be331b01008ae564f8cbc49e6f",
-                "reference": "4cd2d5cccc0bf7be331b01008ae564f8cbc49e6f",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6690347bc833e36f7c781eb3cc2bb33a6c49ca7c",
+                "reference": "6690347bc833e36f7c781eb3cc2bb33a6c49ca7c",
                 "shasum": ""
             },
             "require": {
@@ -80,7 +80,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-10-07 17:09:53"
+            "time": "2015-10-08 16:02:21"
         },
         {
             "name": "aws/aws-sdk-php-laravel",
@@ -4179,16 +4179,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "c7428acdb62ece0a45e6306f1ae85e1c05b09c01"
+                "reference": "23af31f402993cfd94e99cbc4b782e9a78eb0e97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/c7428acdb62ece0a45e6306f1ae85e1c05b09c01",
-                "reference": "c7428acdb62ece0a45e6306f1ae85e1c05b09c01",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/23af31f402993cfd94e99cbc4b782e9a78eb0e97",
+                "reference": "23af31f402993cfd94e99cbc4b782e9a78eb0e97",
                 "shasum": ""
             },
             "require": {
@@ -4226,7 +4226,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2014-10-06 09:23:50"
+            "time": "2015-06-21 15:11:22"
         },
         {
             "name": "sebastian/recursion-context",

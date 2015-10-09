@@ -87,7 +87,7 @@ $app->routeMiddleware([
 
 $app->register('LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider');
 $app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
-$app->register('Aws\Laravel\AwsServiceProvider::class');
+$app->register('Aws\Laravel\AwsServiceProvider');
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ $app->configure('oauth2');
 */
 
 class_alias('LucaDegasperi\OAuth2Server\Facades\Authorizer', 'Authorizer');
-class_alias('Aws\Laravel\AwsFacade::class', 'AWS');
+class_alias('Aws\Laravel\AwsFacade', 'AWS');
 
 /*
 |--------------------------------------------------------------------------
