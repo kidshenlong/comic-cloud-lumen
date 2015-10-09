@@ -98,7 +98,6 @@ class ApiController extends Controller {
     }
     /**
      * @param $errors_object
-     * @internal param $message
      * @return mixed
      */
     public function respondWithError($errors_object){

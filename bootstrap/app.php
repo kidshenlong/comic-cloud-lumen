@@ -61,8 +61,10 @@ $app->middleware([
     // Illuminate\Session\Middleware\StartSession::class,
     // Illuminate\View\Middleware\ShareErrorsFromSession::class,
     // Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
-    'LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware',
-    'App\Http\Middleware\HeaderMiddleware'
+    //'LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware',
+    'App\Http\Middleware\HeaderMiddleware',
+    'App\Http\Middleware\OAuthExceptionHandlerMiddleware'
+
 ]);
 $app->routeMiddleware([
     'check-authorization-params' => 'LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware',
