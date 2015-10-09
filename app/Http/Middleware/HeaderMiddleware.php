@@ -11,7 +11,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class JsonContentTypeMiddleware
+class HeaderMiddleware
 {
     /**
      * Handle an incoming request.
