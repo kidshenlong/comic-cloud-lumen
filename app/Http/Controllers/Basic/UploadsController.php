@@ -17,7 +17,7 @@ class UploadsController extends ApiController {
     public function index(Request $request){
         $currentUser = $this->getUser();
 
-        $uploads = $currentUser->uploads()->paginate(env('paginate_per_page'))->toArray();
+        $uploads = $currentUser->uploads()->paginate(env('paginate_per_page', 10))->toArray();
 
         $uploads['upload'] = $uploads['data'];
         unset($uploads['data']);
