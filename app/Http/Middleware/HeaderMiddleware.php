@@ -22,7 +22,7 @@ class HeaderMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!$request->isJson() && $request->method() != "GET") abort(400); //TODO: Correct error message and also check if get requests should require content type headers.
+        if(!$request->isJson() && $request->method() != "GET") abort(400, 'Incorrect header'); //TODO: Correct error message and also check if get requests should require content type headers. Better message too.
         return $next($request);
     }
 }
