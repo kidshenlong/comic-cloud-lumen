@@ -91,17 +91,18 @@ class UploadsController extends ApiController {
             'file.valid_cba' => 'Not a valid File.',
             'comic_id.user_comics' => 'Not a valid Comic ID',
             'series_id.valid_uuid' => 'The :attribute field is not a valid ID.',
-            'comic_id.valid_uuid' => 'The :attribute field is not a valid ID.'
+            'comic_id.valid_uuid' => 'The :attribute field is not a valid ID.',
+            'file.required' => 'A file is required.'
         ];
 
         $validator = Validator::make(Request::all(), [
-            /*'file' => 'required|valid_cba|between:1,150000',
+            'file' => 'required|valid_cba|between:1,150000',
             'exists' => 'required|boolean',
             'series_id' => 'required|valid_uuid',
             'comic_id' => 'required|valid_uuid|user_comics',
             'series_title' => 'required',
             'series_start_year' => 'required|numeric',
-            'comic_issue' => 'required|numeric',*/
+            'comic_issue' => 'required|numeric'
         ], $messages);
 
         if ($validator->fails()){

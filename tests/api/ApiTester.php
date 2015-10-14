@@ -63,4 +63,22 @@ class ApiTester extends TestCase {
         return $this;
     }
 
+    /**
+     * Visit the given URI with a POST request.
+     *
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $headers
+     * @param  array  $file
+     * @return $this
+     */
+    public function postWithFile($uri, array $data = [], array $headers = [], array $file)
+    {
+        $server = $this->transformHeadersToServerVars($headers);
+
+        $this->call('POST', $uri, $data, [], $file, $server);
+
+        return $this;
+    }
+
 }

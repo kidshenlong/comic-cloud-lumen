@@ -8,6 +8,7 @@
  */
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Rhumsaa\Uuid\Uuid;
 
 class UploadTest extends ApiTester
 {
@@ -42,12 +43,37 @@ class UploadTest extends ApiTester
     }
 
     /**
+     * @group lolz
      * @group basic
      * @group upload-test
      */
     public function test_it_creates_upload()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        //$this->markTestIncomplete('This test has not been implemented yet.');
+
+        /*AWS::shouldReceive('get')
+            ->once()
+            ->with('key')
+            ->andReturn('value');*/
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $this->postWithFile($this->basic_upload_endpoint, [
+            "exists" => false,
+            "series_id" => Uuid::uuid4()->toString(),
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+
+        $this->assertResponseStatus(201);
     }
 
     /**
@@ -123,12 +149,13 @@ class UploadTest extends ApiTester
     }
 
     /**
+     * @group lolz
      * @group basic
      * @group upload-test
      */
     public function test_it_fetches_upload()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        //$this->markTestIncomplete('This test has not been implemented yet.');
     }
 
     /**
