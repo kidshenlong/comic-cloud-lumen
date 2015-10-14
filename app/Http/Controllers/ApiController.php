@@ -9,7 +9,7 @@
 use App\Http\Requests;
 
 use App\Models\User;
-use Authorizer;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Symfony\Component\HttpFoundation\Response as IlluminateResponse;
 
 class ApiController extends Controller {

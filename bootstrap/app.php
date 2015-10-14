@@ -105,7 +105,7 @@ $app->configure('oauth2');
 |--------------------------------------------------------------------------
 */
 
-class_alias('LucaDegasperi\OAuth2Server\Facades\Authorizer', 'Authorizer');
+//class_alias('LucaDegasperi\OAuth2Server\Facades\Authorizer', 'Authorizer');
 //class_alias('Aws\Laravel\AwsFacade', 'AWS');
 
 /*
