@@ -18,6 +18,7 @@ class CreateSeriesTable extends Migration {
             $table->string('series_title');
             $table->integer('series_start_year');
             $table->string('series_publisher');
+			$table->integer('comic_vine_series_id')->nullable();
             $table->integer('user_id')->length(10)->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

@@ -17,6 +17,7 @@ class CreateComicImagesTable extends Migration {
             $table->increments('id');
             $table->string('image_slug');
             $table->string('image_size');
+			$table->text('image_url')->nullable();
             $table->string('image_hash');
             $table->timestamps();
 		});

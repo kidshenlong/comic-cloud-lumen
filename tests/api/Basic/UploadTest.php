@@ -9,6 +9,7 @@
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Rhumsaa\Uuid\Uuid;
+use Aws\Laravel\AwsFacade as AWS;
 
 class UploadTest extends ApiTester
 {
@@ -53,10 +54,10 @@ class UploadTest extends ApiTester
 
         //$this->markTestIncomplete('This test has not been implemented yet.');
 
-        /*AWS::shouldReceive('get')
+        AWS::shouldReceive('createClient')
             ->once()
-            ->with('key')
-            ->andReturn('value');*/
+            ->with('s3')
+            ->andReturn('value');
 
         $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
 
