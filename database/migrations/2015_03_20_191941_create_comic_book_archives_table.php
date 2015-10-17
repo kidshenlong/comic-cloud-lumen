@@ -20,7 +20,8 @@ class CreateComicBookArchivesTable extends Migration {
             $table->text('comic_book_archive_contents')->nullable();//TODO: Nullable may break stuff...
             $table->string('comic_book_archive_hash');
             $table->integer('comic_book_archive_status');
-            $table->timestamps();
+			$table->text('comic_book_archive_permanent_location');
+			$table->timestamps();
 		});
 	}
 
