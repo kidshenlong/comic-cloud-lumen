@@ -29,7 +29,8 @@
         "classmap": [
             "database/",
             "tests/api/ApiTester.php",
-            "app/HTTP/Helpers/helpers.php"
+            "app/Repositories"
+            //"app/HTTP/Helpers/helpers.php"
         ]
     },
     "autoload-dev": {
