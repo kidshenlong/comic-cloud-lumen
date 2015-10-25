@@ -12,8 +12,10 @@ use Request;
 use App\Models\Upload;
 use App\Models\Comic;
 use App\Models\Series;
+use App\Models\User;
 use App\Models\ComicBookArchive;
 use Rhumsaa\Uuid\Uuid;
+use Aws\Laravel\AwsFacade as AWS;
 
 class UploadsController extends ApiController {
 
@@ -63,6 +65,7 @@ class UploadsController extends ApiController {
      * @return Response
      */
     public function store(Request $request, Aws $Aws){
+
         $currentUser = $this->getUser();
 
         Validator::extend('valid_cba', function($attribute, $value, $parameters) {
@@ -101,7 +104,7 @@ class UploadsController extends ApiController {
 
         $validator = Validator::make(Request::all(), [
             'file' => 'required|valid_cba|between:1,150000',
-            'exists' => 'required|boolean',
+            'exists' => 'required|boolean', //TODO: Change this redundant logic
             'series_id' => 'required|valid_uuid',
             'comic_id' => 'required|valid_uuid|user_comics',
             'series_title' => 'required',
@@ -126,14 +129,14 @@ class UploadsController extends ApiController {
         $fileHash = hash_file('md5', $file->getRealPath());
         $match_data = Request::except('file');
 
-        //Write Upload to DB
-        $upload = new Upload;
-        $upload->file_original_name = $file->getClientOriginalName();
-        $upload->file_size = $file->getSize();
-        $upload->file_original_file_type = $file->getClientOriginalExtension();
-        $upload->user_id = $currentUser->id;
-        $upload->match_data = json_encode($match_data);
-        $upload->save();
+        $upload = (new Upload)->create([
+            "id" => Uuid::uuid4()->toString(),
+            "file_original_name" => $file->getClientOriginalName(),
+            "file_size" => $file->getSize(),
+            "file_original_file_type" => $file->getClientOriginalExtension(),
+            "user_id" => $currentUser->id,
+            "match_data" => json_encode($match_data)
+        ]);
 
         $newFileName = Uuid::uuid4()->toString().".".$file->getClientOriginalExtension();
 
@@ -141,28 +144,36 @@ class UploadsController extends ApiController {
         $process_cba = false;
         //If not write an entry for one to the DB and send the file to S3
         if(!$cba){//Upload not found so send file to S3
-            Storage::disk(env('user_uploads', 'local_user_uploads'))->put($newFileName, File::get($file));
-            //Storage::disk(env('user_uploads', 'local_user_uploads'))->put($newFileName, File::get($file));//TODO: Make sure right AWS S3 ACL is used in production
-            //Storage::disk(env('user_uploads', 'local_user_uploads'))->getDriver()->getAdapter
 
-            //$s3 = AWS::createClient('s3');
-            //$s3->pu
+            Storage::disk('user_uploads')->put($newFileName, file_get_contents($file));//Storage::get($file));
+
+            //Storage::disk(env('user_uploads', 'local_user_uploads'))->put($newFileName, File::get($file));//TODO: Make sure right AWS S3 ACL is used in production
+
 
             //$permanent_location = "https://s3".env('AWS_REGION', 'us-east-1').".amazonaws.com/".env('AWS_S3_Uploads')."/".$newFileName; //TODO: This ideally needs to something returned from Laravel's upload
-            $permanent_location = $this->getFileUrl(
-                Storage::disk(env('user_uploads', 'local_user_uploads'))->getDriver()->getAdapter,
-                $newFileName
-            );
+            $permanent_location = getFileUrl("s3", $newFileName);
+
             //create cba
-            $cba = $this->createComicBookArchive($upload->id, $fileHash, $permanent_location);
+            //$cba = $this->createComicBookArchive($upload->id, $fileHash, $permanent_location);
+            $cba = (New ComicBookArchive)->create([
+                "upload_id" => $upload->id,
+                "comic_book_archive_hash" => $fileHash,
+                "comic_book_archive_status" => 0,
+                "comic_book_archive_permanent_location" => $permanent_location
+            ]);
             $process_cba = true;
         }
 
-        //check if series exists, if not create one
-        $series = User::find($this->currentUser->id)->first()->series()->find($match_data['series_id']);
+        $series = $currentUser->series()->find($match_data['series_id']);
 
-        if(!$series){//create
-            $series = $this->createSeries($match_data);
+        if(!$series){
+            $series = (New Series)->create([
+                "id" => $match_data['series_id'],
+                "series_title" => $match_data['series_title'],
+                "series_start_year" => $match_data['series_start_year'],
+                "series_publisher" => 'Unknown',
+                "user_id" => $currentUser->id
+            ]);
         }
 
         $comic_info = [
@@ -173,7 +184,17 @@ class UploadsController extends ApiController {
             'comic_book_archive_id' => $cba->id
         ];
 
-        $comic = $this->createComic($comic_info);
+        //$comic = $this->createComic($comic_info);
+
+        $comic = (New Comic)->create([
+            "id" => $comic_info['comic_id'],
+            "comic_issue" => $comic_info['comic_issue'],
+            "comic_writer" => $comic_info['comic_writer'],
+            "comic_book_archive_contents" => (($cba->comic_book_archive_contents ? $cba->comic_book_archive_contents : '')),
+            "user_id" => $currentUser->id,
+            "series_id" => $comic_info['series_id'],
+            "comic_book_archive_id" => $cba->id
+        ]);
 
         //invoke lambda
         /*if($process_cba) {

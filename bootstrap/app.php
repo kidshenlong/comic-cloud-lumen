@@ -96,8 +96,8 @@ $app->register('Aws\Laravel\AwsServiceProvider');
 | Load Custom Configs
 |--------------------------------------------------------------------------
 */
+$app->configure('filesystems');
 $app->configure('oauth2');
-
 
 /*
 |--------------------------------------------------------------------------

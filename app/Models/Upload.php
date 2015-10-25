@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Upload extends Model {
 
+    public $incrementing = false;
+
     protected $fillable = [];
 
     protected $guarded = ['updated_at', 'created_at'];

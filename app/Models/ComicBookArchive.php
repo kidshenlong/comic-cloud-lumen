@@ -6,6 +6,8 @@ class ComicBookArchive extends Model {
 
     protected $hidden = array('updated_at', 'deleted_at');
 
+    protected $fillable = ['upload_id', 'comic_book_archive_hash', 'comic_book_archive_status', 'comic_book_archive_permanent_location'];
+
     public function upload(){
         return $this->belongsTo('Upload');
     }
