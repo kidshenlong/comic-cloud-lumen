@@ -11,21 +11,20 @@ function getFileUrl($driver, $file, $expiry = 0 ){
     //Supported: "local", "s3", "rackspace"
     if($driver == "s3"){
         $client = AWS::createClient('s3');
-        //if($expiry){
-            //$plainUrl = $client->getObjectUrl(env('S3_USER_UPLOADS_BUCKET'), $file, '+10 minutes');
-        //}else{
-            //$plainUrl = $client->getObjectUrl(env('S3_USER_UPLOADS_BUCKET'), $file);
+        if($expiry){
 
-        $command = $client->getCommand('GetObject', [
-            'Bucket' => env('S3_USER_UPLOADS_BUCKET'),
-            'Key' => $file,
-        ]);
+            $command = $client->getCommand('GetObject', [
+                'Bucket' => env('S3_USER_UPLOADS_BUCKET'),
+                'Key' => $file,
+            ]);
 
-        $request = $client->createPresignedRequest($command, '+10 minutes');
+            $request = $client->createPresignedRequest($command, '+10 minutes');
 
-        $plainUrl = $presignedUrl = (string) $request->getUri();
+            $plainUrl = $presignedUrl = (string) $request->getUri();
 
-        //}
+            }else{
+                $plainUrl = $client->getObjectUrl(env('S3_USER_UPLOADS_BUCKET'), $file);
+            }
     }else if($driver == "rackspace"){
 
     }else{

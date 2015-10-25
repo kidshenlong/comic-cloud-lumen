@@ -87,8 +87,21 @@ class UploadsController extends ApiController {
         });
 
         Validator::extend('user_comics', function($attribute, $value, $parameters) {
-            if($this->getUser()->comics()->find($value)){
+            if(Comic::find($value)){
                 return false;
+            }
+            return true;
+        });
+
+        Validator::extend('user_series', function($attribute, $value, $parameters) {
+            //Check if the series is owned by someone else
+            $series = Series::find($value);
+            if($series){
+                if($series->user_id == $this->getUser()->id){
+                    return true;
+                }else{
+                    return false;
+                }
             }else{
                 return true;
             }
@@ -97,6 +110,7 @@ class UploadsController extends ApiController {
         $messages = [
             'file.valid_cba' => 'Not a valid File.',
             'comic_id.user_comics' => 'Not a valid Comic ID',
+            'series_id.user_series' => 'Not a valid Series ID',
             'series_id.valid_uuid' => 'The :attribute field is not a valid ID.',
             'comic_id.valid_uuid' => 'The :attribute field is not a valid ID.',
             'file.required' => 'A file is required.'
@@ -104,8 +118,7 @@ class UploadsController extends ApiController {
 
         $validator = Validator::make(Request::all(), [
             'file' => 'required|valid_cba|between:1,150000',
-            'exists' => 'required|boolean', //TODO: Change this redundant logic
-            'series_id' => 'required|valid_uuid',
+            'series_id' => 'required|valid_uuid|user_series',
             'comic_id' => 'required|valid_uuid|user_comics',
             'series_title' => 'required',
             'series_start_year' => 'required|numeric',
@@ -141,26 +154,22 @@ class UploadsController extends ApiController {
         $newFileName = Uuid::uuid4()->toString().".".$file->getClientOriginalExtension();
 
         $cba = ComicBookArchive::where('comic_book_archive_hash', '=', $fileHash)->first();
+
         $process_cba = false;
-        //If not write an entry for one to the DB and send the file to S3
-        if(!$cba){//Upload not found so send file to S3
 
-            Storage::disk('user_uploads')->put($newFileName, file_get_contents($file));//Storage::get($file));
+        if(!$cba){
 
-            //Storage::disk(env('user_uploads', 'local_user_uploads'))->put($newFileName, File::get($file));//TODO: Make sure right AWS S3 ACL is used in production
+            Storage::disk('user_uploads')->put($newFileName, file_get_contents($file));//TODO: Make sure right AWS S3 ACL is used in production
 
-
-            //$permanent_location = "https://s3".env('AWS_REGION', 'us-east-1').".amazonaws.com/".env('AWS_S3_Uploads')."/".$newFileName; //TODO: This ideally needs to something returned from Laravel's upload
             $permanent_location = getFileUrl("s3", $newFileName);
 
-            //create cba
-            //$cba = $this->createComicBookArchive($upload->id, $fileHash, $permanent_location);
             $cba = (New ComicBookArchive)->create([
                 "upload_id" => $upload->id,
                 "comic_book_archive_hash" => $fileHash,
                 "comic_book_archive_status" => 0,
                 "comic_book_archive_permanent_location" => $permanent_location
             ]);
+
             $process_cba = true;
         }
 
@@ -184,8 +193,6 @@ class UploadsController extends ApiController {
             'comic_book_archive_id' => $cba->id
         ];
 
-        //$comic = $this->createComic($comic_info);
-
         $comic = (New Comic)->create([
             "id" => $comic_info['comic_id'],
             "comic_issue" => $comic_info['comic_issue'],
@@ -197,9 +204,9 @@ class UploadsController extends ApiController {
         ]);
 
         //invoke lambda
-        /*if($process_cba) {
-            $s3 = AWS::createClient('s3');
-            $s3TempLink = $s3->getObjectUrl(env('AWS_S3_Uploads'), $newFileName, '+10 minutes');
+        if($process_cba) {
+
+            $temporary_location = getFileUrl("s3", $newFileName, "+10 minutes");
 
             $lambda = AWS::get('Lambda');
             $lambda->invokeAsync([
@@ -208,12 +215,11 @@ class UploadsController extends ApiController {
                     "api_base" => url(),
                     "api_version" => 'v'.env('APP_API_VERSION'),//TODO: This should be processor.
                     "environment" => env('APP_ENV'),
-                    "fileLocation" => $s3TempLink,
+                    "fileLocation" => $temporary_location,
                     "cba_id" => $cba->id
                 ]),
             ]);
-        }*/
-
+        }
 
         return $this->respondCreated([
             'upload' => [$upload]
