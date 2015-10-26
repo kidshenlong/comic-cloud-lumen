@@ -54,15 +54,20 @@ class UploadTest extends ApiTester
 
         //$this->markTestIncomplete('This test has not been implemented yet.');
 
-        AWS::shouldReceive('createClient')
+        /*AWS::shouldReceive('createClient')
             ->once()
             ->with('s3')
-            ->andReturn('value');
+            ->andReturn('value');*/
+
+        Storage::shouldReceive('disk->put');
+
+        AWS::shouldReceive('createClient->getCommand');
+        //AWS::shouldReceive('createClient->createPresignedRequest->getUri');
+        AWS::shouldReceive('createClient->getObjectUrl')->andReturn('value');
 
         $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
 
         $this->postWithFile($this->basic_upload_endpoint, [
-            "exists" => false,
             "series_id" => Uuid::uuid4()->toString(),
             "comic_id" => Uuid::uuid4()->toString(),
             "series_title" => "test",
