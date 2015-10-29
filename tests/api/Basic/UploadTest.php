@@ -31,7 +31,11 @@ class UploadTest extends ApiTester
      */
     public function test_it_does_not_accept_patch_or_delete_requests()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->patch($this->basic_upload_endpoint)->seeJson();
+        $this->assertResponseStatus(405);
+
+        $this->delete($this->basic_upload_endpoint)->seeJson();
+        $this->assertResponseStatus(405);
     }
 
     /**
@@ -40,7 +44,13 @@ class UploadTest extends ApiTester
      */
     public function test_it_does_not_accept_post_requests_to_a_specific_upload()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $upload = factory(App\Models\Upload::class)->create(['user_id' => 1]);
+
+        $this->post($this->basic_upload_endpoint.$upload->id, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(405);
     }
 
     /**
@@ -148,11 +158,15 @@ class UploadTest extends ApiTester
 
         $this->seed();
 
-        $uploads = factory(App\Models\Upload::class, rand(1,1))->create(['user_id' => 1]);
+        $uploads = factory(App\Models\Upload::class, rand(2,2/*0*/))->create(['user_id' => 1]);
 
-        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson([
+        /*$this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson([
             'upload' => $uploads->toArray()
-        ]);
+        ]);*/
+
+        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson(
+            $uploads->toArray()
+        );
 
         $this->assertResponseStatus(200);
     }
@@ -173,6 +187,7 @@ class UploadTest extends ApiTester
 
         $this->assertResponseStatus(200);
 
+
     }
 
     /**
@@ -181,7 +196,12 @@ class UploadTest extends ApiTester
      */
     public function test_it_cannot_fetch_an_upload_that_does_not_exist()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+
+        $this->seed();
+
+        $this->get($this->basic_upload_endpoint.str_random(32), ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);
     }
 
     /**
@@ -190,7 +210,20 @@ class UploadTest extends ApiTester
      */
     public function test_it_fetches_user_uploads_only()
     {
+
         $this->markTestIncomplete('This test has not been implemented yet.');
+
+        /*$this->seed();
+
+        $uploads = factory(App\Models\Upload::class, 10)->create(['user_id' => 1]);
+
+        $other_user_upload = factory(App\Models\Upload::class)->create(['user_id' => 2]);
+
+        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);*/
+
+
     }
 
     /**
@@ -199,6 +232,12 @@ class UploadTest extends ApiTester
      */
     public function test_it_fetches_user_upload_only()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $other_user_upload = factory(App\Models\Upload::class)->create(['user_id' => 2]);
+
+        $this->get($this->basic_upload_endpoint.$other_user_upload, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);
     }
 }
