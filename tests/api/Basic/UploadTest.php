@@ -60,7 +60,7 @@ class UploadTest extends ApiTester
         AWS::shouldReceive('Lambda->invokeAsync');
 
         $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
-
+		
         $req = $this->postWithFile($this->basic_upload_endpoint, [
             "series_id" => Uuid::uuid4()->toString(),
             "comic_id" => Uuid::uuid4()->toString(),
@@ -72,7 +72,6 @@ class UploadTest extends ApiTester
         ], [
             'file' => $file
         ]);
-
         $this->assertResponseStatus(201);
     }
 
@@ -146,7 +145,6 @@ class UploadTest extends ApiTester
      */
     public function test_it_fetches_all_uploads()
     {
-        //$this->markTestIncomplete('This test has not been implemented yet.');
 
         $this->seed();
 
@@ -165,8 +163,15 @@ class UploadTest extends ApiTester
      */
     public function test_it_fetches_upload()
     {
-        //$this->seed();
-        $this->markTestIncomplete('This test has not been implemented yet.');
+
+        $this->seed();
+
+        $upload = factory(App\Models\Upload::class)->create(['user_id' => 1]);
+        //dd($upload->toArray());
+
+        $this->get($this->basic_upload_endpoint.$upload->id, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson($upload->toArray());
+
+        $this->assertResponseStatus(200);
 
     }
 

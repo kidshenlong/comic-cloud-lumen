@@ -55,7 +55,7 @@ class UploadsController extends ApiController {
         }
 
         return $this->respond([
-            'upload' => [$upload]
+            'upload' => $upload
         ]);
     }
 
@@ -208,7 +208,7 @@ class UploadsController extends ApiController {
 
             $temporary_location = getFileUrl("s3", $newFileName, "+10 minutes");
 
-            $lambda = AWS::get('Lambda');
+            /*$lambda = AWS::get('Lambda');
             $lambda->invokeAsync([
                 'FunctionName' => env('LAMBDA_FUNCTION_NAME'),
                 'InvokeArgs' => json_encode([
@@ -218,11 +218,11 @@ class UploadsController extends ApiController {
                     "fileLocation" => $temporary_location,
                     "cba_id" => $cba->id
                 ]),
-            ]);
+			]);*/
         }
 
         return $this->respondCreated([
-            'upload' => [$upload]
+            'upload' => $upload
         ]);
 
     }
