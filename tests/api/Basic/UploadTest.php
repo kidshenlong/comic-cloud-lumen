@@ -94,14 +94,6 @@ class UploadTest extends ApiTester
         $this->markTestIncomplete('This test has not been implemented yet.');
     }
 
-    /**
-     * @group basic
-     * @group upload-test
-     */
-    public function test_uploads_must_have_match_data_exists()
-    {
-        $this->markTestIncomplete('This test has not been implemented yet.');
-    }
 
     /**
      * @group basic
@@ -109,7 +101,21 @@ class UploadTest extends ApiTester
      */
     public function test_uploads_must_have_match_data_series_id()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+        $this->assertResponseStatus(400);
     }
 
     /**
@@ -118,7 +124,21 @@ class UploadTest extends ApiTester
      */
     public function test_uploads_must_have_match_data_comic_id()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+        $this->assertResponseStatus(400);
     }
 
     /**
@@ -127,7 +147,21 @@ class UploadTest extends ApiTester
      */
     public function test_uploads_must_have_match_data_series_title()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => Uuid::uuid4()->toString(),
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+        $this->assertResponseStatus(400);
     }
 
     /**
@@ -136,7 +170,21 @@ class UploadTest extends ApiTester
      */
     public function test_uploads_must_have_match_data_series_start_year()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => Uuid::uuid4()->toString(),
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+        $this->assertResponseStatus(400);
     }
 
     /**
@@ -145,11 +193,140 @@ class UploadTest extends ApiTester
      */
     public function test_uploads_must_have_match_data_comic_issue()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => Uuid::uuid4()->toString(),
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "series_start_year" => "2015"
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+        $this->assertResponseStatus(400);
+    }
+    /**
+     * @group basic
+     * @group upload-test
+     */
+    public function test_uploads_must_have_a_valid_for_comic__or_series_id()
+    {
+        $this->seed();
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => "xyz",
+            "comic_id" => "xyz",
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+    }
+    /**
+     * @group basic
+     * @group upload-test
+     */
+    public function test_uploads_must_have_a_unique_comic_id()
+    {
+        $this->seed();
+
+        $comic = factory(App\Models\Comic::class)->create([
+            'user_id' => 1
+        ]);
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => Uuid::uuid4()->toString(),
+            "comic_id" => $comic->id,
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+        $this->assertResponseStatus(400);
     }
 
     /**
-     * @group lolz
+     * @group basic
+     * @group upload-test
+     */
+    public function test_uploads_can_have_an_existing_series_id()
+    {
+        $this->seed();
+
+        Storage::shouldReceive('disk->put');
+
+        AWS::shouldReceive('createClient->getCommand');
+        AWS::shouldReceive('createClient->createPresignedRequest->getUri');
+        AWS::shouldReceive('createClient->getObjectUrl')->andReturn('value');
+        AWS::shouldReceive('Lambda');
+        AWS::shouldReceive('Lambda->invokeAsync');
+
+        $series = factory(App\Models\Series::class)->create([
+            'user_id' => 1
+        ]);
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => $series->id,
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+
+        $this->assertResponseStatus(201);
+
+    }
+
+    /**
+     * @group basic
+     * @group upload-test
+     */
+    public function test_uploads_with_an_existing_series_id_must_belong_to_the_user()
+    {
+        $this->seed();
+
+        $other_user_series = factory(App\Models\Series::class)->create([
+            'user_id' => 2
+        ]);
+
+        $file = new Symfony\Component\HttpFoundation\File\UploadedFile(storage_path( 'test files/test-comic-6-pages.cbz' ), 'test-comic-6-pages.cbz', 'application/zip', 1000, null, TRUE );
+
+        $req = $this->postWithFile($this->basic_upload_endpoint, [
+            "series_id" => $other_user_series->id,
+            "comic_id" => Uuid::uuid4()->toString(),
+            "series_title" => "test",
+            "series_start_year" => "2015",
+            "comic_issue" => 1
+        ], [
+            'Authorization' => 'Bearer '. $this->test_basic_access_token
+        ], [
+            'file' => $file
+        ]);
+
+        $this->assertResponseStatus(400);
+
+    }
+    /**
      * @group basic
      * @group upload-test
      */
@@ -210,17 +387,17 @@ class UploadTest extends ApiTester
     public function test_it_fetches_user_uploads_only()
     {
 
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->seed();
 
-        /*$this->seed();
-
-        $uploads = factory(App\Models\Upload::class, 10)->create(['user_id' => 1]);
+        $uploads = factory(App\Models\Upload::class, 5)->create(['user_id' => 1]);
 
         $other_user_upload = factory(App\Models\Upload::class)->create(['user_id' => 2]);
 
-        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson([
+            "upload" => $uploads
+        ]);
 
-        $this->assertResponseStatus(404);*/
+        $this->assertResponseStatus(200);
 
 
     }

@@ -88,6 +88,7 @@ $factory->define(App\Models\ComicBookArchive::class, function (Faker\Generator $
         'upload_id' => factory(App\Models\Upload::class)->create()->id,
         'comic_book_archive_hash' => $faker->md5,
         'comic_book_archive_contents' => null,
+        'comic_book_archive_permanent_location' => $faker->url,
         'comic_book_archive_status' => 0
     ];
 });
