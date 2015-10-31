@@ -160,13 +160,13 @@ class UploadTest extends ApiTester
 
         $uploads = factory(App\Models\Upload::class, rand(2,2/*0*/))->create(['user_id' => 1]);
 
-        /*$this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson([
-            'upload' => $uploads->toArray()
-        ]);*/
+        $uploads = $uploads->toArray();
 
-        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson(
-            $uploads->toArray()
-        );
+        if(!isset($uploads[0])) $uploads = [$uploads];//Fix for toArray not returning single objects in collection format
+
+        $this->get($this->basic_upload_endpoint, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson([
+            "upload" => $uploads
+        ]);
 
         $this->assertResponseStatus(200);
     }
@@ -181,7 +181,6 @@ class UploadTest extends ApiTester
         $this->seed();
 
         $upload = factory(App\Models\Upload::class)->create(['user_id' => 1]);
-        //dd($upload->toArray());
 
         $this->get($this->basic_upload_endpoint.$upload->id, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson($upload->toArray());
 
