@@ -30,14 +30,12 @@ $factory->define(App\Models\Upload::class, function (Faker\Generator $faker) {
     $random_upload_id = $faker->uuid;
 
     return[
+        'id' => $faker->uuid,
         'user_id'  => factory(App\Models\User::class)->create()->id,
-        'file_original_name' => $fileName,
         'file_size' => $faker->numberBetween(1000000, 50000000),
-        'file_upload_name' => $random_upload_id.'.'.$thisFileExt,
+        'file_original_name' => $random_upload_id.'.'.$thisFileExt,
         'file_original_file_type' => $thisFileExt,
-        'file_random_upload_id' => $random_upload_id,
         'match_data' => json_encode([
-            'exists' => false,
             'series_id' =>  $faker->uuid,
             'comic_id' => $faker->uuid,
             'series_title' => $faker->sentence,
@@ -90,6 +88,7 @@ $factory->define(App\Models\ComicBookArchive::class, function (Faker\Generator $
         'upload_id' => factory(App\Models\Upload::class)->create()->id,
         'comic_book_archive_hash' => $faker->md5,
         'comic_book_archive_contents' => null,
+        'comic_book_archive_permanent_location' => $faker->url,
         'comic_book_archive_status' => 0
     ];
 });

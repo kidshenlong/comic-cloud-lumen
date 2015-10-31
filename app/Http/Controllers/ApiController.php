@@ -9,7 +9,7 @@
 use App\Http\Requests;
 
 use App\Models\User;
-use LucaDegasperi\OAuth2Server\Authorizer;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use Symfony\Component\HttpFoundation\Response as IlluminateResponse;
 
 class ApiController extends Controller {
@@ -98,7 +98,6 @@ class ApiController extends Controller {
     }
     /**
      * @param $errors_object
-     * @internal param $message
      * @return mixed
      */
     public function respondWithError($errors_object){

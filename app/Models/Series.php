@@ -12,7 +12,7 @@ class Series extends Model {
 
     protected $hidden = ['created_at', 'updated_at', 'user_id'];
 
-    protected $fillable = ['id', 'series_title', 'series_start_year', 'series_publisher'];
+    protected $fillable = ['id', 'series_title', 'series_start_year', 'series_publisher', 'user_id'];
 
     protected $appends = ['series_cover_img'];
 

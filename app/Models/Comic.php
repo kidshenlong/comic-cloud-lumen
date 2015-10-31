@@ -12,7 +12,7 @@ class Comic extends Model {
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = ['comic_issue','comic_writer','comic_book_archive_contents'];
+    protected $fillable = ['id', 'comic_issue','comic_writer','comic_book_archive_contents', 'user_id', 'series_id', 'comic_book_archive_id'];
 
     protected $hidden = array('created_at', 'updated_at', 'user_id','comic_book_archive_id','deleted_at');
 

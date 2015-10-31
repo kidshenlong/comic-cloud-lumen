@@ -21,10 +21,10 @@ class CreateComicsTable extends Migration {
             $table->integer('user_id')->length(10)->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('series_id', 40);
+            $table->integer('comic_vine_issue_id')->nullable();
             $table->foreign('series_id')->references('id')->on('series')->onDelete('cascade');
             $table->integer('comic_book_archive_id')->length(10)->unsigned();
             $table->foreign('comic_book_archive_id')->references('id')->on('comic_book_archives')->onDelete('cascade');
-            $table->integer('comic_status');
             $table->timestamps();
 		});
 	}

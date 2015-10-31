@@ -11,7 +11,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class JsonContentTypeMiddleware
+class HeaderMiddleware
 {
     /**
      * Handle an incoming request.
@@ -22,7 +22,7 @@ class JsonContentTypeMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!$request->isJson()) abort(400); //TODO: Correct error message
+        //if(!$request->isJson() && $request->method() != "GET") abort(400, 'Incorrect header'); //TODO: Correct error message and also check if get requests should require content type headers. Better message too.
         return $next($request);
     }
 }

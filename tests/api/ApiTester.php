@@ -22,6 +22,9 @@ class ApiTester extends TestCase {
     protected $oauth_endpoint = "/oauth/access_token/";
     protected $register_endpoint = "/auth/register/";
 
+    protected $basic_upload_endpoint = "/v0.1/uploads/";
+    protected $admin_upload_endpoint = "/admin/uploads/";
+
     protected $basic_comic_image_endpoint = "/v0.1/images/";
     protected $admin_comic_image_endpoint = "/admin/images/";
     protected $processor_comic_image_endpoint = "/processor/images/";
@@ -57,6 +60,24 @@ class ApiTester extends TestCase {
         $this->call(
             $method, $uri, [], [], [], $this->transformHeadersToServerVars($headers), $content
         );
+        return $this;
+    }
+
+    /**
+     * Visit the given URI with a POST request.
+     *
+     * @param  string  $uri
+     * @param  array  $data
+     * @param  array  $headers
+     * @param  array  $file
+     * @return $this
+     */
+    public function postWithFile($uri, array $data = [], array $headers = [], array $file)
+    {
+        $server = $this->transformHeadersToServerVars($headers);
+
+        $this->call('POST', $uri, $data, [], $file, $server);
+
         return $this;
     }
 

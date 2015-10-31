@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Models\User;
 use Validator;
-use Authorizer;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 
 class AuthController extends ApiController {
 
