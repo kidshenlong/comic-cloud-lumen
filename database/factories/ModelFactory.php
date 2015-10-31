@@ -46,7 +46,9 @@ $factory->define(App\Models\Upload::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\Comic::class, function (Faker\Generator $faker) {
-    $cba = factory(App\Models\ComicBookArchive::class)->create();
+    $cba = factory(App\Models\ComicBookArchive::class)->create([
+        'comic_book_archive_status' => 1
+    ]);
 
     $comic_book_archive_contents = [];
 

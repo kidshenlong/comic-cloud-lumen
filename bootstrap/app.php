@@ -90,6 +90,7 @@ $app->routeMiddleware([
 $app->register('LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider');
 $app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
 $app->register('Aws\Laravel\AwsServiceProvider');
+$app->register('Intervention\Image\ImageServiceProvider');
 
 /*
 |--------------------------------------------------------------------------
