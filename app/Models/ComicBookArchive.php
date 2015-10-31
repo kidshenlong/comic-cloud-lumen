@@ -22,9 +22,10 @@ class ComicBookArchive extends Model {
         if($json_array) {
             $json_array = json_decode($json_array);
 
-            array_walk($json_array, function (&$value, $key) {
+            /*array_walk($json_array, function (&$value, $key) {
                 $value = url('v'.env('APP_API_VERSION').env('image_url') . $value);
-            });
+            });*/
+
             return json_decode(json_encode($json_array, true));
         }
     }
