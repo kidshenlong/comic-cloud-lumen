@@ -18,9 +18,11 @@ use App\Http\Controllers\ApiController;
 class SeriesController extends ApiController {
 
     protected $request;
+    protected $guzzle;
 
-    public function __construct(Request $request){
+    public function __construct(Request $request, Guzzle $guzzle){
         $this->request = $request;
+        $this->guzzle = $guzzle;
     }
 
 
@@ -328,9 +330,7 @@ class SeriesController extends ApiController {
 
     public function showRelatedComics($series_id){
 
-        $currentUser = $this->currentUser;
-
-        $page = (Input::get('page') ? Input::get('page') : 1);//TODO: Find out if this is actually needed
+        $currentUser =  $currentUser = $this->getUser();
 
         $comic = $currentUser->comics()->where('series_id', '=', $series_id)->paginate(env('paginate_per_page'))->toArray();
 
