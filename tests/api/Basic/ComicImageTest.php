@@ -104,8 +104,8 @@ class ComicImageTest extends ApiTester{
         Image::shouldReceive('make');
         Image::shouldReceive('cache->response');
 
-        $req = $this->get($this->basic_comic_image_endpoint.head($contents),['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token]);
-        file_put_contents(storage_path()."/output.html", $req->response->content());
+        $this->get($this->basic_comic_image_endpoint.head($contents),['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token]);
+
         $this->assertResponseStatus(200);
     }
     /**

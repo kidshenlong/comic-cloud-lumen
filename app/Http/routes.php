@@ -35,7 +35,7 @@ $app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('A
     $app->post('series', 'SeriesController@store');
     $app->put('series/{series_id}', 'SeriesController@update');
     $app->delete('series/{series_id}','SeriesController@destroy');
-    $app->get('series/{series_id}/meta', 'SeriesController@showMetaData');
+    $app->get('series/{series_id}/matches', 'SeriesController@showMatchData');
     $app->get('series/{series_id}/comics', 'SeriesController@showRelatedComics');
 });
 
