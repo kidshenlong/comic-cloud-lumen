@@ -35,7 +35,7 @@ class ApiTester extends TestCase {
     protected $basic_series_endpoint = "/v0.1/series/";
     protected $admin_series_endpoint = "/admin/series/";
 
-    protected $meta_endpoint = "/meta";
+    protected $matches_endpoint = "/matches";
 
     protected $admin_comic_book_archive_endpoint = "/admin/comicbookarchives/";
     protected $processor_comic_book_archive_endpoint = "/processor/comicbookarchives/";

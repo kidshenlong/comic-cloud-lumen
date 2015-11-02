@@ -8,7 +8,7 @@
 use App\Http\Controllers\ApiController;
 use Storage;
 use Validator;
-use Request;
+use Illuminate\Http\Request;
 use App\Models\Upload;
 use App\Models\Comic;
 use App\Models\Series;
@@ -19,10 +19,16 @@ use Aws\Laravel\AwsFacade as AWS;
 
 class UploadsController extends ApiController {
 
+    protected $request;
+
+    public function __construct(Request $request){
+        $this->request = $request;
+    }
+
     /**
      * @return mixed
      */
-    public function index(Request $request){
+    public function index(){
         $currentUser = $this->getUser();
 
         $uploads = $currentUser->uploads()->paginate(env('paginate_per_page', 10))->toArray();
@@ -64,7 +70,7 @@ class UploadsController extends ApiController {
      *
      * @return Response
      */
-    public function store(Request $request, Aws $Aws){
+    public function store(){
 
         $currentUser = $this->getUser();
 
@@ -116,7 +122,7 @@ class UploadsController extends ApiController {
             'file.required' => 'A file is required.'
         ];
 
-        $validator = Validator::make(Request::all(), [
+        $validator = Validator::make($this->request->all(), [
             'file' => 'required|valid_cba|between:1,150000',
             'series_id' => 'required|valid_uuid|user_series',
             'comic_id' => 'required|valid_uuid|user_comics',
@@ -138,9 +144,9 @@ class UploadsController extends ApiController {
             return $this->respondBadRequest($pretty_errors);
         }
 
-        $file = Request::file('file');
+        $file = $this->request->file('file');
         $fileHash = hash_file('md5', $file->getRealPath());
-        $match_data = Request::except('file');
+        $match_data = $this->request->except('file');
 
         $upload = (new Upload)->create([
             "id" => Uuid::uuid4()->toString(),

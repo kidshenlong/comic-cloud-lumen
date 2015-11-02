@@ -16,6 +16,8 @@ class Series extends Model {
 
     protected $appends = ['series_cover_img'];
 
+    protected $casts = ['comic_vine_series_id' => 'integer'];
+
     public function comics(){
         return $this->hasMany('App\Models\Comic')->orderBy('comic_issue', 'ASC');
     }

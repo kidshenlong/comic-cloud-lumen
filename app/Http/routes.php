@@ -27,10 +27,16 @@ $app->group(['namespace' => 'App\Http\Controllers\Auth', 'prefix' => 'auth'], fu
 $app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('APP_VERSION', '0.1'), 'middleware' => 'oauth'], function ($app) {
     $app->get('uploads', 'UploadsController@index');
     $app->post('uploads', 'UploadsController@store');
-    $app->get('uploads/{id}', 'UploadsController@show');
+    $app->get('uploads/{upload_id}', 'UploadsController@show');
     $app->get('images/{image_slug}', 'ComicImagesController@show');
     $app->get('images/{image_slug}/{size}', 'ComicImagesController@show');
-
+    $app->get('series', 'SeriesController@index');
+    $app->get('series/{series_id}', 'SeriesController@show');
+    $app->post('series', 'SeriesController@store');
+    $app->put('series/{series_id}', 'SeriesController@update');
+    $app->delete('series/{series_id}','SeriesController@destroy');
+    $app->get('series/{series_id}/matches', 'SeriesController@showMatchData');
+    $app->get('series/{series_id}/comics', 'SeriesController@showRelatedComics');
 });
 
 
