@@ -28,7 +28,7 @@ class SeriesTest extends ApiTester{
     public function test_it_fetch_all_series(){
         $this->seed();
 
-        $series = factory(App\Models\Series::class, rand(1,10))->create(['user_id' => 1])->each(function($series){
+        $series = factory(App\Models\Series::class, rand(2,10))->create(['user_id' => 1])->each(function($series){
             factory(App\Models\Comic::class, rand(1,10))->create([
                 'user_id' => 1,
                 'series_id' => $series->id
@@ -430,7 +430,6 @@ class SeriesTest extends ApiTester{
      */
     public function test_it_cannot_fetch_meta_data_for_series_that_does_not_belong_to_the_user(){
 
-
         $this->seed();
 
         $comic = factory(App\Models\Comic::class)->create([
@@ -442,5 +441,27 @@ class SeriesTest extends ApiTester{
         $this->assertResponseStatus(404);
 
 
+    }
+    /**
+     * @group lolz
+     * @group basic
+     * @group series-test
+     */
+    public function test_it_can_fetch_related_comics(){
+
+        $this->seed();
+
+        $series = factory(App\Models\Series::class)->create(['user_id' => 1]);
+
+        $comic = factory(App\Models\Comic::class)->create([
+            'user_id' => 1,
+            'series_id' => $series->id
+        ]);
+
+        $this->get($this->basic_series_endpoint.$series->id."/comics", ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson([
+            "comic" => [$comic]
+        ]);
+
+        $this->assertResponseStatus(200);
     }
 }
