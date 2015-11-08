@@ -76,6 +76,8 @@ class SeriesController extends ApiController {
      */
     public function store(){
 
+        $currentUser = $this->getUser();
+
         Validator::extend('valid_uuid', function($attribute, $value, $parameters) {
             if(preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $value)) {
                 return true;
@@ -84,14 +86,23 @@ class SeriesController extends ApiController {
             }
         });
 
+        Validator::extend('series_exists', function($attribute, $value, $parameters) use ($currentUser) {
+            if (Series::find($value)) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+
         $messages = [
             'id.valid_uuid' => 'The :attribute field is not a valid ID.',
-            'comic_id.valid_uuid' => 'The :attribute field is not a valid ID.'
+            'comic_id.valid_uuid' => 'The :attribute field is not a valid ID.',
+            'id.series_exists' => 'The :attribute field is not a valid ID.'
         ];
 
 
         $validator = Validator::make($data = $this->request->all(), [
-            'id' => 'required|valid_uuid',
+            'id' => 'required|valid_uuid|series_exists',
             'comic_id' => 'required|valid_uuid',
             'series_title' => 'required',
             'series_start_year' => 'date_format:Y'
@@ -110,12 +121,12 @@ class SeriesController extends ApiController {
             return $this->respondBadRequest($pretty_errors);
         }
 
-        $comic = $this->currentUser->comics()->find($data['comic_id']);
+        $comic = $currentUser->comics()->find($data['comic_id']);
         if($comic) {
             $old_series_id = $comic->series_id;
             $series = new Series;
             $series->id = $data['id'];
-            $series->user_id = $this->currentUser->id;
+            $series->user_id = $currentUser->id;
             $series->series_title = $data['series_title'];
             $series->series_start_year = (!empty($data['series_start_year']) ? $data['series_start_year'] : date('Y'));
             $series->series_publisher = (!empty($data['series_publisher']) ? $data['series_publisher'] : "Unknown");

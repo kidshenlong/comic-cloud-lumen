@@ -131,8 +131,6 @@ class SeriesTest extends ApiTester{
      */
     public function test_it_can_create_a_new_series_for_a_comic(){
 
-        $this->markTestIncomplete('This test has not been implemented yet.');
-
         $this->seed();
 
         $comic = factory(App\Models\Comic::class)->create([
@@ -164,6 +162,28 @@ class SeriesTest extends ApiTester{
      * @group basic
      * @group series-test
      */
+    public function test_it_cannot_create_a_new_series_with_an_invalid_comic_id(){
+
+        $this->seed();
+
+        $faker = Factory::create();
+        $newSeriesId = $faker->uuid;
+
+        $this->post($this->basic_series_endpoint, [
+            'id' => $newSeriesId,
+            'comic_id' => $faker->uuid,
+            'series_title' => $faker->sentence(),
+            'series_start_year' => $faker->year,
+            'comic_vine_series_id' => $faker->randomNumber()
+        ], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(400);
+
+    }
+    /**
+     * @group basic
+     * @group series-test
+     */
     public function test_it_cannot_create_a_new_series_for_a_comic_with_an_invalid_series_id(){
         $this->seed();
 
@@ -190,8 +210,6 @@ class SeriesTest extends ApiTester{
      * @group series-test
      */
     public function test_it_can_create_a_new_series_for_a_comic_without_a_year(){
-
-        $this->markTestIncomplete('This test has not been implemented yet.');
 
         $this->seed();
 
@@ -231,7 +249,6 @@ class SeriesTest extends ApiTester{
         $this->assertResponseStatus(400);
     }
     /**
-     * @group lolz
      * @group basic
      * @group series-test
      */
@@ -339,21 +356,50 @@ class SeriesTest extends ApiTester{
         $this->assertResponseStatus(400);
     }
     /**
+     * @group lolz
+     * @group basic
+     * @group series-test
+     */
+    public function test_a_user_can_delete_a_series(){
+
+        $this->seed();
+
+        $series = factory(App\Models\Series::class)->create(['user_id' => 1]);
+
+        $comic = factory(App\Models\Comic::class)->create([
+            'user_id' => 1,
+            'series_id' => $series->id
+        ]);
+
+        $this->delete($this->basic_series_endpoint.$series->id, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(200);
+
+        $this->get($this->basic_series_endpoint.$series->id, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(404);
+
+    }
+    /**
      * @group basic
      * @group series-test
      */
     public function test_a_user_can_delete_a_series_and_associated_comics(){
 
-        $this->markTestIncomplete('This test has not been implemented yet.');
+        $this->markTestSkipped("SQLite doesn't support foreign keys out of the box.");
 
         $this->seed();
 
+        $series = factory(App\Models\Series::class)->create(['user_id' => 1]);
+
         $comic = factory(App\Models\Comic::class)->create([
             'user_id' => 1,
-            'series_id' => factory(App\Models\Series::class)->create(['user_id' => 1])->id
+            'series_id' => $series->id
         ]);
 
-        $this->delete($this->basic_series_endpoint.$comic->series_id, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+        $this->delete($this->basic_series_endpoint.$series->id, [], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(200);
 
         $this->get($this->basic_comic_endpoint.$comic->id, ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
 
@@ -361,7 +407,6 @@ class SeriesTest extends ApiTester{
 
     }
     /**
-     * @group lolz
      * @group basic
      * @group series-test
      */
@@ -380,7 +425,6 @@ class SeriesTest extends ApiTester{
 
     }
     /**
-     * @group lolz
      * @group basic
      * @group series-test
      */
@@ -443,7 +487,6 @@ class SeriesTest extends ApiTester{
 
     }
     /**
-     * @group lolz
      * @group basic
      * @group series-test
      */
@@ -463,5 +506,48 @@ class SeriesTest extends ApiTester{
         ]);
 
         $this->assertResponseStatus(200);
+    }
+
+    /**
+     * @group basic
+     * @group series-test
+     */
+    public function test_a_user_cannot_create_a_series_with_a_for_comic_id_that_does_not_exist(){
+
+        $this->seed();
+
+        $faker = Factory::create();
+
+        $this->post($this->basic_series_endpoint, [
+            'id' => $faker->uuid,
+            'comic_id' => $faker->uuid,
+            'series_title' => $faker->sentence(),
+            'series_start_year' => $faker->year,
+            'comic_vine_series_id' => $faker->randomNumber()
+        ], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(400);
+    }
+    /**
+     * @group basic
+     * @group series-test
+     */
+    public function test_it_cannot_create_a_new_series_with_an_existing_id(){
+        $this->seed();
+
+        $series = factory(App\Models\Series::class)->create(['user_id' => 1]);
+
+        $faker = Factory::create();
+
+        $this->post($this->basic_series_endpoint, [
+            'id' => $series->id,
+            'comic_id' => $faker->uuid,
+            'series_title' => $faker->sentence(),
+            'series_start_year' => $faker->year,
+            'comic_vine_series_id' => $faker->randomNumber()
+        ], ['HTTP_Authorization' => 'Bearer '. $this->test_basic_access_token])->seeJson();
+
+        $this->assertResponseStatus(400);
+
     }
 }

@@ -88,7 +88,6 @@ class ComicImageTest extends ApiTester{
         $this->assertResponseStatus(404);
     }
     /**
-     * @group lolz
      * @group basic
      * @group image-test
      */
