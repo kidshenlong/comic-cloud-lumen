@@ -374,7 +374,7 @@ class ComicTest extends ApiTester{
      * @group basic
      * @group comic-test
      */
-    public function test_it_will_return_the_last_page_when_requesting_outside_the_page_count(){
+    public function test_it_will_return_the_last_page_when_requesting_outside_the_page_count_for_matches(){
         $this->seed();
 
         $comic = factory(App\Models\Comic::class)->create([
