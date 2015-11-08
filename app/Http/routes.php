@@ -18,18 +18,23 @@ $app->get('/status', function () use ($app) {
 });
 
 $app->group(['namespace' => 'App\Http\Controllers\Auth', 'prefix' => 'auth'], function($app) {
+
     $app->post('register', 'AuthController@create');
     $app->post('access_token', 'AuthController@createToken');
+
 });
 
 
 
 $app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('APP_VERSION', '0.1'), 'middleware' => 'oauth'], function ($app) {
+
     $app->get('uploads', 'UploadsController@index');
     $app->post('uploads', 'UploadsController@store');
     $app->get('uploads/{upload_id}', 'UploadsController@show');
+
     $app->get('images/{image_slug}', 'ComicImagesController@show');
     $app->get('images/{image_slug}/{size}', 'ComicImagesController@show');
+
     $app->get('series', 'SeriesController@index');
     $app->get('series/{series_id}', 'SeriesController@show');
     $app->post('series', 'SeriesController@store');
@@ -37,6 +42,14 @@ $app->group(['namespace' => 'App\Http\Controllers\Basic', 'prefix' => 'v'.env('A
     $app->delete('series/{series_id}','SeriesController@destroy');
     $app->get('series/{series_id}/matches', 'SeriesController@showMatchData');
     $app->get('series/{series_id}/comics', 'SeriesController@showRelatedComics');
+
+    $app->get('comics', 'ComicsController@index');
+    $app->get('comics/{comic_id}', 'ComicsController@show');
+    $app->put('comics/{comics_id}', 'ComicsController@update');
+    $app->delete('comics/{comics_id}','ComicsController@destroy');
+    $app->get('comics/{comic_id}/series', 'ComicsController@showRelatedSeries');
+    $app->get('comics/{comic_id}/matches', 'ComicsController@showMatchData');
+
 });
 
 

@@ -87,6 +87,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
+$app->register(App\Providers\AppServiceProvider::class);
 $app->register('LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider');
 $app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
 $app->register('Aws\Laravel\AwsServiceProvider');
