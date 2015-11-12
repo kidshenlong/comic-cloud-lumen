@@ -63,7 +63,8 @@ $app->middleware([
     // Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
     //'LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware',
     'App\Http\Middleware\HeaderMiddleware',
-    'App\Http\Middleware\OAuthExceptionHandlerMiddleware'
+    'App\Http\Middleware\OAuthExceptionHandlerMiddleware',
+    'App\Http\Middleware\CorsMiddleware'
 
 ]);
 $app->routeMiddleware([
@@ -87,11 +88,11 @@ $app->routeMiddleware([
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
-$app->register(App\Providers\AppServiceProvider::class);
 $app->register('LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider');
 $app->register('LucaDegasperi\OAuth2Server\Lumen\OAuth2ServerServiceProvider');
 $app->register('Aws\Laravel\AwsServiceProvider');
 $app->register('Intervention\Image\ImageServiceProvider');
+$app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 
 /*
 |--------------------------------------------------------------------------
